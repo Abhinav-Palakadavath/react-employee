@@ -1,3 +1,5 @@
+//Employee salary updation page
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +12,7 @@ const Details = () => {
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
-    // Redirect to login page if not logged in
+    // Redirect to login if not logged in
     useEffect(() => {
         const isLoggedIn = localStorage.getItem("isLoggedIn");
         if (!isLoggedIn) {
@@ -20,13 +22,13 @@ const Details = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("isLoggedIn"); // Clear login status
-        navigate("/"); // Redirect to login page
+        navigate("/"); 
     };
-
+    // Fetch employee details from the server
     const fetchEmployeeDetails = async (id) => {
         try {
             const response = await axios.post(
-                "/ReactTest/ReactTest.php", // API endpoint as is
+                "/ReactTest/ReactTest.php", 
                 {
                     RequestID: "GetEmployeeDetails",
                     EmployeeID: id,
@@ -43,6 +45,7 @@ const Details = () => {
                 setEmployeeDOB(response.data.DOB || "");
                 setMessage("");
             } else {
+                // Clear details and show error if not found
                 setEmployeeName("");
                 setEmployeeDOB("");
                 setSalary("");
@@ -53,7 +56,7 @@ const Details = () => {
             setMessage({ text: "Error connecting to the server.", color: "red" });
         }
     };
-
+     // Handle changes to the Employee ID input
     const handleEmployeeIDChange = (e) => {
         const id = e.target.value;
         setEmployeeID(id);
@@ -65,7 +68,7 @@ const Details = () => {
 
     const handleEmployeeIDBlur = async () => {
         if (employeeID.trim() !== "") {
-            await fetchEmployeeDetails(employeeID);
+            await fetchEmployeeDetails(employeeID); // Fetch details if ID is not empty
         } else {
             setEmployeeName("");
             setEmployeeDOB("");
@@ -75,6 +78,11 @@ const Details = () => {
 
     const updateSalary = async () => {
         try {
+        // Check if the salary contains only digits
+        if (!/^\d+$/.test(salary)) {
+            setMessage({ text: "Salary must be a numeric value.", color: "red" });
+        return;
+        }
             const salaryNumber = parseInt(salary, 10);
             if (salaryNumber < 1 || salaryNumber > 25000) {
                 setMessage({ text: "Salary must be a number between 1 and 25000.", color: "red" });
@@ -82,7 +90,7 @@ const Details = () => {
             }
 
             const response = await axios.post(
-                "/ReactTest/ReactTest.php", // API endpoint as is
+                "/ReactTest/ReactTest.php", 
                 {
                     RequestID: "UpdateSalary",
                     EmployeeID: employeeID,
@@ -109,7 +117,7 @@ const Details = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (employeeName && employeeDOB) {
-            await updateSalary();
+            await updateSalary(); // Proceed if valid employee details are present
         } else {
             setMessage({ text: "Please enter a valid Employee ID.", color: "red" });
         }
