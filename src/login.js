@@ -1,3 +1,4 @@
+//Login page for updating salary
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,13 +8,13 @@ const Login = () => {
     const [Password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
-
+     // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             const response = await axios.post(
-                "/ReactTest/ReactTest.php", // API endpoint as is
+                "/ReactTest/ReactTest.php", 
                 { RequestID: "SignIn", UserID, Password },
                 { headers: { "Content-Type": "application/json" } }
             );
